@@ -5,6 +5,11 @@ import { AppService } from './app.service';
 import { APP_FILTER } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { StudentModule } from './student/student.module';
+import { TutorModule } from './tutor/tutor.module';
+import { SemesterModule } from './semester/semester.module';
+import { UnitsModule } from './units/units.module';
+import { ExamsModule } from './exams/exams.module';
 import configuration from './config/config.service';
 
 @Module({
@@ -15,6 +20,11 @@ import configuration from './config/config.service';
       load: [configuration],
     }),
     AuthModule,
+    StudentModule,
+    TutorModule,
+    SemesterModule,
+    UnitsModule,
+    ExamsModule,
   ],
   controllers: [AppController],
   providers: [
