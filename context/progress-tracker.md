@@ -4,16 +4,18 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Model layer implemented
+- Student registration implemented
 
 ## Current Goal
 
-- Verify and integrate the MongoDB/Mongoose model layer from `context/feature-specs/01-create-models.md`.
+- Verify student registration and CRUD from `context/feature-specs/02-register-student.md`.
 
 ## Completed
 
 - Implemented the 24 core Mongoose schemas from `01-create-models` with collection names, relationships, enums, timestamps, and key indexes.
 - Added model directories for parent links, lecturers, departments, courses, course units, enrollments, attendance, assessments, grades, timetables, finance records, communication, documents, AI insights, welfare, audit logs, and system settings.
+- Implemented `02-register-student` student registration with validated DTOs, Mongoose-backed create/read/update/delete endpoints, linked user creation, and supporting department/course/semester resolution.
+- Registered student feature schemas and configured the root MongoDB connection with `MONGODB_URI` support.
 
 ## In Progress
 
@@ -21,8 +23,8 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Register schemas in domain modules and add repositories/services for the first API workflow after model creation is complete.
 - Resolve generated scaffold lint issues in existing services before enforcing lint as a clean verification gate.
+- Add focused service tests for registration failure paths and linked model creation once test database infrastructure is available.
 
 ## Open Questions
 
@@ -31,9 +33,12 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Architecture Decisions
 
 - Use NestJS Mongoose class schemas in each domain module's `entities` directory for this model layer increment.
+- Student registration creates the identity `User` first, then the `Student` record, after resolving linked academic models (`Department`, `Course`, and optional `Semester`) in a MongoDB transaction.
 
 ## Session Notes
 
 - 2026-05-03 18:30 EAT: Started implementation of `01-create-models`; tracker marked in progress before code changes.
 - 2026-05-03 18:30 EAT: Model implementation compiled with `npm run build`. `npm run lint` still fails on pre-existing generated scaffold unused DTO parameters in services and a floating promise warning in `main.ts`; no model files were reported.
 - 2026-05-03 18:30 EAT: Targeted entity lint check passed with `npx eslint "src/**/entities/*.ts"`.
+- 2026-05-03 21:10 EAT: Started `02-register-student`; tracker marked in progress before code changes.
+- 2026-05-03 21:10 EAT: `02-register-student` implemented. Verification passed with `npm run build`, `npm test -- student`, and targeted lint for touched files. Jest reported a worker teardown warning after passing the student tests.
