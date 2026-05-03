@@ -3,6 +3,7 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
+  IsDefined,
   IsEmail,
   IsEnum,
   IsMongoId,
@@ -104,6 +105,7 @@ export class CreateSemesterForStudentDto {
 }
 
 export class CreateStudentDto {
+  @IsDefined()
   @ValidateNested()
   @Type(() => CreateStudentUserDto)
   user: CreateStudentUserDto;

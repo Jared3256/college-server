@@ -23,11 +23,15 @@ import configuration from './config/config.service';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        uri:
-          configService.get<string>('database.uri') ??
-          'mongodb://127.0.0.1:27017/college_management_system',
-      }),
+      useFactory: (configService: ConfigService) => {
+        const uri = configService.get<string>('database.uri');
+        if (!uri) {
+          throw new Error(
+            'MONGODB_URI environment variable is not set. Cannot start without a database connection.',
+          );
+        }
+        return { uri };
+      },
     }),
     AuthModule,
     StudentModule,
