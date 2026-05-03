@@ -8,10 +8,7 @@ import {
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { randomBytes, scryptSync } from 'node:crypto';
 import { ClientSession, Connection, Model, Types } from 'mongoose';
-import {
-  Course,
-  CourseDocument,
-} from '../course/entities/course.entity';
+import { Course, CourseDocument } from '../course/entities/course.entity';
 import {
   Department,
   DepartmentDocument,
@@ -20,11 +17,7 @@ import {
   Semester,
   SemesterDocument,
 } from '../semester/entities/semester.entity';
-import {
-  User,
-  UserDocument,
-  UserRole,
-} from '../user/entities/user.entity';
+import { User, UserDocument, UserRole } from '../user/entities/user.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Student, StudentDocument } from './entities/student.entity';
@@ -55,7 +48,10 @@ export class StudentService {
       let student: StudentDocument | null = null;
 
       await session.withTransaction(async () => {
-        const department = await this.resolveDepartment(createStudentDto, session);
+        const department = await this.resolveDepartment(
+          createStudentDto,
+          session,
+        );
         const course = await this.resolveCourse(
           createStudentDto,
           department._id,
@@ -280,9 +276,7 @@ export class StudentService {
         { $setOnInsert: createStudentDto.department },
         { new: true, upsert: true, runValidators: true, session },
       )
-      .orFail(
-        () => new BadRequestException('Department could not be resolved'),
-      )
+      .orFail(() => new BadRequestException('Department could not be resolved'))
       .exec();
   }
 
@@ -363,9 +357,7 @@ export class StudentService {
         { $setOnInsert: updateStudentDto.department },
         { new: true, upsert: true, runValidators: true, session },
       )
-      .orFail(
-        () => new BadRequestException('Department could not be resolved'),
-      )
+      .orFail(() => new BadRequestException('Department could not be resolved'))
       .exec();
   }
 
@@ -448,7 +440,9 @@ export class StudentService {
     return this.departmentModel
       .findById(id)
       .session(session)
-      .orFail(() => new NotFoundException(`Department with id ${id} was not found`))
+      .orFail(
+        () => new NotFoundException(`Department with id ${id} was not found`),
+      )
       .exec();
   }
 
@@ -474,7 +468,9 @@ export class StudentService {
     return this.semesterModel
       .findById(id)
       .session(session)
-      .orFail(() => new NotFoundException(`Semester with id ${id} was not found`))
+      .orFail(
+        () => new NotFoundException(`Semester with id ${id} was not found`),
+      )
       .exec();
   }
 

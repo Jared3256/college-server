@@ -29,7 +29,7 @@ export class User {
   @Prop({ required: true, trim: true, index: true })
   phoneNumber: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, select: false })
   passwordHash: string;
 
   @Prop({ required: true, enum: UserRole, index: true })
