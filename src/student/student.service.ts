@@ -223,15 +223,30 @@ export class StudentService {
   async remove(id: string): Promise<StudentDocument> {
     this.validateObjectId(id);
 
-    const student = await this.studentModel.findByIdAndDelete(id).exec();
+    const session = await this.connection.startSession();
+    let student: StudentDocument | null = null;
 
-    if (!student) {
-      throw new NotFoundException(`Student with id ${id} was not found`);
+    try {
+      await session.withTransaction(async () => {
+        student = await this.studentModel
+          .findByIdAndDelete(id)
+          .session(session)
+          .exec();
+        if (!student) {
+          throw new NotFoundException(`Student with id ${id} was not found`);
+        }
+        await this.userModel.findByIdAndDelete(student.userId).exec();
+
+        await this.userModel
+          .findByIdAndDelete(student.userId)
+          .session(session)
+          .exec();
+      });
+
+      return student!;
+    } finally {
+      await session.endSession();
     }
-
-    await this.userModel.findByIdAndDelete(student.userId).exec();
-
-    return student;
   }
 
   private async createStudentUser(
@@ -273,7 +288,12 @@ export class StudentService {
     return this.departmentModel
       .findOneAndUpdate(
         { code: createStudentDto.department.code.toUpperCase() },
-        { $setOnInsert: createStudentDto.department },
+        {
+          $setOnInsert: {
+            ...createStudentDto.department,
+            code: createStudentDto.department.code.toUpperCase(),
+          },
+        },
         { new: true, upsert: true, runValidators: true, session },
       )
       .orFail(() => new BadRequestException('Department could not be resolved'))

@@ -44,7 +44,7 @@ export class User {
   @Prop({ default: false })
   mfaEnabled: boolean;
 
-  @Prop()
+  @Prop({ select: false })
   refreshTokenHash?: string;
 }
 
