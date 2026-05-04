@@ -17,7 +17,7 @@ import configuration from './config/config.service';
   imports: [
     SentryModule.forRoot(),
     ConfigModule.forRoot({
-      envFilePath: ['.env.development'],
+      envFilePath: ['.env.development.local'],
       load: [configuration],
     }),
     MongooseModule.forRootAsync({
