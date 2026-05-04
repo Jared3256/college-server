@@ -17,7 +17,7 @@ export class CourseUnit {
   @Prop({ type: Types.ObjectId, ref: 'Semester', required: true, index: true })
   semesterId: Types.ObjectId;
 
-  @Prop({ required: true, unique: true, trim: true })
+  @Prop({ required: true, trim: true })
   unitName: string;
 
   @Prop({ required: true, unique: true, uppercase: true, trim: true })
@@ -30,4 +30,8 @@ export class CourseUnit {
   description?: string;
 }
 
-export const CourseUnitSchema = SchemaFactory.createForClass(CourseUnit);
+const CourseUnitSchema = SchemaFactory.createForClass(CourseUnit);
+
+CourseUnitSchema.index({ courseId: 1, unitName: 1 }, { unique: true });
+
+export { CourseUnitSchema };

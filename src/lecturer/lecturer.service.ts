@@ -183,15 +183,36 @@ export class LecturerService {
   async remove(id: string): Promise<LecturerDocument> {
     this.validateObjectId(id);
 
-    const lecturer = await this.lecturerModel.findByIdAndDelete(id).exec();
+    const session = await this.connection.startSession();
 
-    if (!lecturer) {
-      throw new NotFoundException(`Lecturer with id ${id} was not found`);
+    try {
+      let deletedLecturer: LecturerDocument | null = null;
+      await session.withTransaction(async () => {
+        const lecturer = await this.lecturerModel
+          .findByIdAndDelete(id)
+          .session(session)
+          .exec();
+
+        if (!lecturer) {
+          throw new NotFoundException(`Lecturer with id ${id} was not found`);
+        }
+
+        await this.userModel
+          .findByIdAndDelete(lecturer.userId)
+          .session(session)
+          .exec();
+
+        deletedLecturer = lecturer;
+      });
+
+      if (!deletedLecturer) {
+        throw new NotFoundException(`Lecturer with id ${id} was not found`);
+      }
+
+      return deletedLecturer;
+    } finally {
+      await session.endSession();
     }
-
-    await this.userModel.findByIdAndDelete(lecturer.userId).exec();
-
-    return lecturer;
   }
 
   private async buildUpdateFields(

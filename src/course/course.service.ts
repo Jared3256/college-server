@@ -138,9 +138,7 @@ export class CourseService {
         { $setOnInsert: createCourseDto.department },
         { new: true, upsert: true, runValidators: true },
       )
-      .orFail(
-        () => new BadRequestException('Department could not be resolved'),
-      )
+      .orFail(() => new BadRequestException('Department could not be resolved'))
       .exec();
   }
 
@@ -161,9 +159,7 @@ export class CourseService {
         { $setOnInsert: updateCourseDto.department },
         { new: true, upsert: true, runValidators: true },
       )
-      .orFail(
-        () => new BadRequestException('Department could not be resolved'),
-      )
+      .orFail(() => new BadRequestException('Department could not be resolved'))
       .exec();
   }
 
@@ -172,7 +168,9 @@ export class CourseService {
 
     return this.departmentModel
       .findById(id)
-      .orFail(() => new NotFoundException(`Department with id ${id} was not found`))
+      .orFail(
+        () => new NotFoundException(`Department with id ${id} was not found`),
+      )
       .exec();
   }
 
