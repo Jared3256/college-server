@@ -11,13 +11,13 @@ export class CourseUnit {
   @Prop({ type: Types.ObjectId, ref: 'Course', required: true, index: true })
   courseId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Lecturer', required: true, index: true })
-  lecturerId: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Lecturer', index: true })
+  lecturerId?: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'Semester', required: true, index: true })
   semesterId: Types.ObjectId;
 
-  @Prop({ required: true, trim: true })
+  @Prop({ required: true, unique: true, trim: true })
   unitName: string;
 
   @Prop({ required: true, unique: true, uppercase: true, trim: true })

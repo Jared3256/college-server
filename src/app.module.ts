@@ -12,6 +12,9 @@ import { SemesterModule } from './semester/semester.module';
 import { UnitsModule } from './units/units.module';
 import { ExamsModule } from './exams/exams.module';
 import { DepartmentModule } from './department/department.module';
+import { CourseModule } from './course/course.module';
+import { CourseUnitModule } from './course-unit/course-unit.module';
+import { LecturerModule } from './lecturer/lecturer.module';
 import configuration from './config/config.service';
 
 @Module({
@@ -37,6 +40,9 @@ import configuration from './config/config.service';
     AuthModule,
     StudentModule,
     DepartmentModule,
+    CourseModule,
+    CourseUnitModule,
+    LecturerModule,
     TutorModule,
     SemesterModule,
     UnitsModule,
