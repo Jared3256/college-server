@@ -3,10 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 
 export enum AssessmentType {
   CAT = 'CAT',
-  ASSIGNMENT = 'ASSIGNMENT',
-  EXAM = 'EXAM',
-  PROJECT = 'PROJECT',
-  PRACTICAL = 'PRACTICAL',
+  MAIN = 'MAIN',
 }
 
 export type AssessmentDocument = HydratedDocument<Assessment>;
