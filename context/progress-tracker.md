@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Lecturer API implemented
+- Assessments API implemented
 
 ## Current Goal
 
-- Verify lecturer CRUD API from `context/feature-specs/06-create-lecture.md`.
+- Resolve existing lecturer build/type blockers before enforcing full-project build as a clean verification gate.
 
 ## Completed
 
@@ -21,6 +21,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Implemented `04-create-courses` with course DTOs, controller, service, module registration, department resolution, and Mongoose-backed CRUD operations.
 - Implemented `05-create-course-units` with course-unit DTOs, controller, service, module registration, course/semester/lecturer validation, distinct unit name/code checks, and guarded delete behavior.
 - Implemented `06-create-lecture` with lecturer DTOs, controller, service, module registration, user linkage/creation, department validation, automatic staff number generation, and Mongoose-backed CRUD operations.
+- Implemented `07-assessments` with assessment DTOs, controller, service, module registration, course-unit/course/semester/lecturer validation, CAT/MAIN mark limits, nested course-unit creation, Mongoose-backed CRUD operations, and guarded delete behavior.
 
 ## In Progress
 
@@ -28,6 +29,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
+- Resolve existing lecturer DTO/type errors before enforcing build as a clean verification gate.
 - Resolve generated scaffold lint issues in existing services before enforcing lint as a clean verification gate.
 - Add focused service tests for registration failure paths and linked model creation once test database infrastructure is available.
 
@@ -45,6 +47,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - Course-unit creation resolves the linked course by either `courseId` or `courseCode`, and requires an existing `semesterId`.
 - Lecturer registration requires a valid existing department and either an existing `userId` or nested user payload; nested user payloads create a `User` with role `LECTURER`.
 - Lecturer staff numbers are generated as `KIIST/STAFF/{employmentYear}/{incrementingNumber}` using the employment year and current lecturer count for that year.
+- Assessment creation resolves an existing course unit by `courseUnitId` or `unitCode`, or creates a nested course unit only after validating its course, semester, and optional lecturer links.
+- Assessment deletion is blocked when grades reference the assessment or enrollments exist for the assessment course unit.
 
 ## Session Notes
 
@@ -61,3 +65,5 @@ Update this file whenever the current phase, active feature, or implementation s
 - 2026-05-04 15:19 EAT: `05-create-course-units` implemented. Verification passed with `npm run build`, `npm test -- course-unit`, and targeted lint for touched files.
 - 2026-05-04 15:36 EAT: Started `06-create-lecture`; tracker marked in progress before code changes.
 - 2026-05-04 15:36 EAT: `06-create-lecture` implemented. Verification passed with `npm run build`, `npm test -- lecturer`, and targeted lint for touched files.
+- 2026-05-04 16:10 EAT: Continued `07-assessments`; implemented assessment type constraints, dependency validation, nested course-unit resolution, update validation, and guarded delete behavior.
+- 2026-05-04 16:10 EAT: `07-assessments` implemented. Verification passed with `npm test -- assessment` and targeted lint for assessment files. `npm run build` is blocked by existing lecturer DTO/type errors in `src/lecturer/lecturer.service.ts`.
