@@ -11,13 +11,14 @@ import { TutorModule } from './tutor/tutor.module';
 import { SemesterModule } from './semester/semester.module';
 import { UnitsModule } from './units/units.module';
 import { ExamsModule } from './exams/exams.module';
+import { DepartmentModule } from './department/department.module';
 import configuration from './config/config.service';
 
 @Module({
   imports: [
     SentryModule.forRoot(),
     ConfigModule.forRoot({
-      envFilePath: ['.env.development.local'],
+      envFilePath: ['.env.development.local', '.env'],
       load: [configuration],
     }),
     MongooseModule.forRootAsync({
@@ -35,6 +36,7 @@ import configuration from './config/config.service';
     }),
     AuthModule,
     StudentModule,
+    DepartmentModule,
     TutorModule,
     SemesterModule,
     UnitsModule,
