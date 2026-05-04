@@ -26,9 +26,9 @@ export class DepartmentService {
   async create(
     createDepartmentDto: CreateDepartmentDto,
   ): Promise<DepartmentDocument> {
-    try {
-      await this.ensureHeadOfDepartmentExists(createDepartmentDto.hodId);
+    await this.ensureHeadOfDepartmentExists(createDepartmentDto.hodId);
 
+    try {
       const department = new this.departmentModel({
         ...createDepartmentDto,
         code: createDepartmentDto.code.toUpperCase(),
@@ -70,10 +70,11 @@ export class DepartmentService {
   ): Promise<DepartmentDocument> {
     this.validateObjectId(id);
 
+    let department: DepartmentDocument | null;
+
     try {
       await this.ensureHeadOfDepartmentExists(updateDepartmentDto.hodId);
-
-      const department = await this.departmentModel
+      department = await this.departmentModel
         .findByIdAndUpdate(
           id,
           {
@@ -83,12 +84,6 @@ export class DepartmentService {
           { new: true, runValidators: true },
         )
         .exec();
-
-      if (!department) {
-        throw new NotFoundException(`Department with id ${id} was not found`);
-      }
-
-      return department;
     } catch (error: unknown) {
       this.logger.error(`Department update failed for ${id}`, error);
 
@@ -100,6 +95,12 @@ export class DepartmentService {
 
       throw error;
     }
+
+    if (!department) {
+      throw new NotFoundException(`Department with id ${id} was not found`);
+    }
+
+    return department;
   }
 
   async remove(id: string): Promise<DepartmentDocument> {
@@ -121,7 +122,9 @@ export class DepartmentService {
 
     this.validateObjectId(hodId);
 
-    const lecturerExists = await this.lecturerModel.exists({ _id: hodId }).exec();
+    const lecturerExists = await this.lecturerModel
+      .exists({ _id: hodId })
+      .exec();
 
     if (!lecturerExists) {
       throw new BadRequestException(
