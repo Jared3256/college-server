@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Assessments API implemented
+- Enrollment API implemented
 
 ## Current Goal
 
-- Resolve existing lecturer build/type blockers before enforcing full-project build as a clean verification gate.
+- Prepare for the next feature unit after verifying enrollment API behavior.
 
 ## Completed
 
@@ -22,6 +22,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Implemented `05-create-course-units` with course-unit DTOs, controller, service, module registration, course/semester/lecturer validation, distinct unit name/code checks, and guarded delete behavior.
 - Implemented `06-create-lecture` with lecturer DTOs, controller, service, module registration, user linkage/creation, department validation, automatic staff number generation, and Mongoose-backed CRUD operations.
 - Implemented `07-assessments` with assessment DTOs, controller, service, module registration, course-unit/course/semester/lecturer validation, CAT/MAIN mark limits, nested course-unit creation, Mongoose-backed CRUD operations, and guarded delete behavior.
+- Implemented `08-enrollment` with enrollment DTOs, controller, service, module registration, course registration, active-semester course-unit enrollment validation, Mongoose-backed CRUD operations, and blocked delete behavior.
 
 ## In Progress
 
@@ -29,9 +30,8 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
-- Resolve existing lecturer DTO/type errors before enforcing build as a clean verification gate.
 - Resolve generated scaffold lint issues in existing services before enforcing lint as a clean verification gate.
-- Add focused service tests for registration failure paths and linked model creation once test database infrastructure is available.
+- Add deeper enrollment service tests for registration failure paths once test database infrastructure is available.
 
 ## Open Questions
 
@@ -49,9 +49,13 @@ Update this file whenever the current phase, active feature, or implementation s
 - Lecturer staff numbers are generated as `KIIST/STAFF/{employmentYear}/{incrementingNumber}` using the employment year and current lecturer count for that year.
 - Assessment creation resolves an existing course unit by `courseUnitId` or `unitCode`, or creates a nested course unit only after validating its course, semester, and optional lecturer links.
 - Assessment deletion is blocked when grades reference the assessment or enrollments exist for the assessment course unit.
+- Enrollment course registration updates an existing student with an existing course and active semester; unit enrollment requires the student course to match the course unit, the course unit to have a lecturer, and the requested semester to be the active semester.
+- Enrollment delete requests return a conflict instead of deleting records because enrollment history is immutable once created.
 
 ## Session Notes
 
+- 2026-05-13 EAT: Started `08-enrollment`; tracker marked in progress before code changes.
+- 2026-05-13 EAT: `08-enrollment` implemented. Verification passed with `npm test -- enrollment`, targeted ESLint for touched enrollment/app files, and `npm run build`.
 - 2026-05-03 18:30 EAT: Started implementation of `01-create-models`; tracker marked in progress before code changes.
 - 2026-05-03 18:30 EAT: Model implementation compiled with `npm run build`. `npm run lint` still fails on pre-existing generated scaffold unused DTO parameters in services and a floating promise warning in `main.ts`; no model files were reported.
 - 2026-05-03 18:30 EAT: Targeted entity lint check passed with `npx eslint "src/**/entities/*.ts"`.

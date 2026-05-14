@@ -52,6 +52,10 @@ export class CreateLecturerDto {
 
 export class UpdateLecturerUserDto {
   @IsOptional()
+  @IsMongoId()
+  userId?: string;
+
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   fullName?: string;
