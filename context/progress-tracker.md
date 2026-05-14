@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Enrollment API implemented
+- Exams API implemented
 
 ## Current Goal
 
-- Prepare for the next feature unit after verifying enrollment API behavior.
+- Prepare for the next feature unit after verifying exams API behavior.
 
 ## Completed
 
@@ -23,6 +23,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Implemented `06-create-lecture` with lecturer DTOs, controller, service, module registration, user linkage/creation, department validation, automatic staff number generation, and Mongoose-backed CRUD operations.
 - Implemented `07-assessments` with assessment DTOs, controller, service, module registration, course-unit/course/semester/lecturer validation, CAT/MAIN mark limits, nested course-unit creation, Mongoose-backed CRUD operations, and guarded delete behavior.
 - Implemented `08-enrollment` with enrollment DTOs, controller, service, module registration, course registration, active-semester course-unit enrollment validation, Mongoose-backed CRUD operations, and blocked delete behavior.
+- Implemented `09-exams` with exam lifecycle schemas, validated DTOs, nested operational endpoints, eligibility computation, scheduling, attempts, autosave submissions, audited grading changes, moderation, attendance, malpractice immutability, controlled result publication, and targeted tests.
 
 ## In Progress
 
@@ -31,11 +32,14 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Next Up
 
 - Resolve generated scaffold lint issues in existing services before enforcing lint as a clean verification gate.
+- Confirm institution-level exam eligibility policy sources before making attendance thresholds and clearance sources configurable.
 - Add deeper enrollment service tests for registration failure paths once test database infrastructure is available.
 
 ## Open Questions
 
 - Confirm whether existing scaffold names (`auth`, `student`, `tutor`, `units`, `exams`) should be renamed to domain names (`users`, `students`, `lecturers`, `course-units`, `assessments`) in a future cleanup.
+- Confirm whether the exam eligibility attendance threshold should remain at the implemented 75% default or move into configurable institution policy.
+- Confirm the canonical finance and disciplinary clearance sources when those modules expose authoritative clearance APIs.
 
 ## Architecture Decisions
 
@@ -51,9 +55,15 @@ Update this file whenever the current phase, active feature, or implementation s
 - Assessment deletion is blocked when grades reference the assessment or enrollments exist for the assessment course unit.
 - Enrollment course registration updates an existing student with an existing course and active semester; unit enrollment requires the student course to match the course unit, the course unit to have a lecturer, and the requested semester to be the active semester.
 - Enrollment delete requests return a conflict instead of deleting records because enrollment history is immutable once created.
+- Exams are archived through lifecycle status instead of hard-deleted; malpractice delete requests return a conflict because malpractice records are immutable.
+- Exam eligibility is computed in the service from server-side registration and attendance records where available, with fee and disciplinary clearance carried as administrative clearance inputs until authoritative modules exist.
+- Exam result updates create exam audit logs containing previous and next grading values, and publication requires approved results before marking results and the exam as published.
 
 ## Session Notes
 
+- 2026-05-14 EAT: `09-exams` implemented. Verification passed with `npm test -- exams`, targeted ESLint for `src/exams/**/*.ts`, and `npm run build`.
+- 2026-05-14 EAT: Continued `09-exams`; tracker confirmed in progress before implementing endpoints and workflows.
+- 2026-05-14 EAT: Started `09-exams`; tracker marked in progress before code changes.
 - 2026-05-13 EAT: Started `08-enrollment`; tracker marked in progress before code changes.
 - 2026-05-13 EAT: `08-enrollment` implemented. Verification passed with `npm test -- enrollment`, targeted ESLint for touched enrollment/app files, and `npm run build`.
 - 2026-05-03 18:30 EAT: Started implementation of `01-create-models`; tracker marked in progress before code changes.
