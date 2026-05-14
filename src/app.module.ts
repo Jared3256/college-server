@@ -16,6 +16,7 @@ import { CourseModule } from './course/course.module';
 import { CourseUnitModule } from './course-unit/course-unit.module';
 import { LecturerModule } from './lecturer/lecturer.module';
 import { AssessmentModule } from './assessment/assessment.module';
+import { EnrollmentModule } from './enrollment/enrollment.module';
 import configuration from './config/config.service';
 
 @Module({
@@ -45,6 +46,7 @@ import configuration from './config/config.service';
     CourseUnitModule,
     LecturerModule,
     AssessmentModule,
+    EnrollmentModule,
     TutorModule,
     SemesterModule,
     UnitsModule,

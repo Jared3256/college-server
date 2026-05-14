@@ -11,7 +11,10 @@ import { ClientSession, Connection, Model, Types } from 'mongoose';
 import { Department } from '../department/entities/department.entity';
 import { User, UserRole } from '../user/entities/user.entity';
 import { CreateLecturerDto } from './dto/create-lecturer.dto';
-import { UpdateLecturerDto } from './dto/update-lecturer.dto';
+import {
+  UpdateLecturerDto,
+  UpdateUserLectureDto,
+} from './dto/update-lecturer.dto';
 import { Lecturer, LecturerDocument } from './entities/lecturer.entity';
 
 interface LecturerUpdateFields {
@@ -114,7 +117,7 @@ export class LecturerService {
 
   async update(
     id: string,
-    updateLecturerDto: UpdateLecturerDto,
+    updateLecturerDto: UpdateUserLectureDto,
   ): Promise<LecturerDocument> {
     this.validateObjectId(id);
 
@@ -125,21 +128,21 @@ export class LecturerService {
       let updatedLecturer: LecturerDocument | null = null;
 
       await session.withTransaction(async () => {
-        if (updateLecturerDto.user) {
+        if (existingLecturer) {
           await this.userModel
             .findByIdAndUpdate(
               existingLecturer.userId,
               {
-                fullName: updateLecturerDto.user.fullName,
-                email: updateLecturerDto.user.email,
-                phoneNumber: updateLecturerDto.user.phoneNumber,
-                ...(updateLecturerDto.user.password
-                  ? {
-                      passwordHash: this.hashPassword(
-                        updateLecturerDto.user.password,
-                      ),
-                    }
-                  : {}),
+                fullName: updateLecturerDto.fullName,
+                email: updateLecturerDto.email,
+                phoneNumber: updateLecturerDto.phoneNumber,
+                // ...(updateLecturerDto.user.password
+                //   ? {
+                //       passwordHash: this.hashPassword(
+                //         updateLecturerDto.user.password,
+                //       ),
+                //     }
+                //   : {}),
               },
               { new: true, runValidators: true, session },
             )
