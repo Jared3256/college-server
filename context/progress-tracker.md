@@ -4,11 +4,11 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Current Phase
 
-- Exams API implemented
+- Grades API implemented
 
 ## Current Goal
 
-- Prepare for the next feature unit after verifying exams API behavior.
+- Prepare for the next feature unit after verifying grades API behavior.
 
 ## Completed
 
@@ -24,6 +24,7 @@ Update this file whenever the current phase, active feature, or implementation s
 - Implemented `07-assessments` with assessment DTOs, controller, service, module registration, course-unit/course/semester/lecturer validation, CAT/MAIN mark limits, nested course-unit creation, Mongoose-backed CRUD operations, and guarded delete behavior.
 - Implemented `08-enrollment` with enrollment DTOs, controller, service, module registration, course registration, active-semester course-unit enrollment validation, Mongoose-backed CRUD operations, and blocked delete behavior.
 - Implemented `09-exams` with exam lifecycle schemas, validated DTOs, nested operational endpoints, eligibility computation, scheduling, attempts, autosave submissions, audited grading changes, moderation, attendance, malpractice immutability, controlled result publication, and targeted tests.
+- Implemented `10-grade` with grade workflow schema expansion, DTOs, `/api/v1/grades` endpoints, service-level actor authorization, lecturer/HOD/Admin rules, enrollment/exam validation, grade lifecycle transitions, audit logging, publication notifications, and targeted tests.
 
 ## In Progress
 
@@ -31,6 +32,8 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Next Up
 
+- Add shared JWT guards, role decorators, course ownership guards, and throttling once the common auth/security infrastructure is available.
+- Integrate external email/SMS delivery providers for grade publication notifications.
 - Resolve generated scaffold lint issues in existing services before enforcing lint as a clean verification gate.
 - Confirm institution-level exam eligibility policy sources before making attendance thresholds and clearance sources configurable.
 - Add deeper enrollment service tests for registration failure paths once test database infrastructure is available.
@@ -58,9 +61,17 @@ Update this file whenever the current phase, active feature, or implementation s
 - Exams are archived through lifecycle status instead of hard-deleted; malpractice delete requests return a conflict because malpractice records are immutable.
 - Exam eligibility is computed in the service from server-side registration and attendance records where available, with fee and disciplinary clearance carried as administrative clearance inputs until authoritative modules exist.
 - Exam result updates create exam audit logs containing previous and next grading values, and publication requires approved results before marking results and the exam as published.
+- Grades are implemented as a dedicated workflow module at `/api/v1/grades`, with the `grades` collection as the canonical grade state for student-facing academic results.
+- Grade authorization is enforced in the grade service using explicit actor IDs until shared JWT guards, role decorators, and ownership guards are introduced.
+- HOD grade permissions are derived from `Department.hodId` matching the acting lecturer instead of adding a new user role enum.
+- Grade marks are converted with the provisional scale `A=70-100`, `B+=60-69`, `B=50-59`, `C=40-49`, `D=35-39`, and `F<35` until an institution-level grading policy module exists.
+- Grade publication creates persisted notification records for students and linked parents; external email/SMS delivery remains a future integration.
 
 ## Session Notes
 
+- 2026-05-15 EAT: `10-grade` implemented. Verification passed with `npm test -- grade`, `npm test -- exams`, targeted ESLint for `src/grade/**/*.ts` and `src/app.module.ts`, and `npm run build`.
+- 2026-05-15 EAT: Added Grades module registration, expanded the canonical `grades` schema, implemented lifecycle endpoints, service-level actor authorization, HOD-derived moderation, audit logs, and persisted student/parent academic notifications.
+- 2026-05-15 EAT: Started `10-grade`; tracker marked in progress before code changes. Implementation will follow `10-1-grade-api-plan.md`, with service-level actor authorization and audit logging until shared auth guards exist.
 - 2026-05-14 EAT: `09-exams` implemented. Verification passed with `npm test -- exams`, targeted ESLint for `src/exams/**/*.ts`, and `npm run build`.
 - 2026-05-14 EAT: Continued `09-exams`; tracker confirmed in progress before implementing endpoints and workflows.
 - 2026-05-14 EAT: Started `09-exams`; tracker marked in progress before code changes.
